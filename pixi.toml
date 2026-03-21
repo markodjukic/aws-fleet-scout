@@ -1,0 +1,42 @@
+[workspace]
+name = "aws-fleet-scout"
+description = "Pixi environment for developing aws-fleet-scout"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+[dependencies]
+python = ">=3.9,<3.13"
+pip = ">=24"
+
+[pypi-dependencies]
+aws-fleet-scout = { path = ".", editable = true }
+
+[feature.dev.dependencies]
+pytest = ">=7.0.0"
+pytest-cov = ">=4.0.0"
+black = ">=23.0.0"
+isort = ">=5.0.0"
+flake8 = ">=6.0.0"
+mypy = ">=1.0.0"
+python-build = ">=1.0.0"
+twine = ">=4.0.0"
+
+[feature.dev.tasks]
+version-current = "python -c \"from aws_fleet_scout import __version__; print(__version__)\""
+test = "pytest tests/unit"
+test-all = "pytest"
+test-functional = "pytest -m functional"
+coverage = "pytest --cov=aws_fleet_scout --cov-report=term-missing"
+sort-imports = "isort aws_fleet_scout tests examples"
+format = "black aws_fleet_scout tests examples"
+lint = "flake8 aws_fleet_scout tests examples"
+typecheck = "mypy aws_fleet_scout"
+build = "python -m build"
+bump-patch = "python scripts/bump_version.py patch"
+bump-minor = "python scripts/bump_version.py minor"
+bump-major = "python scripts/bump_version.py major"
+cli-help = "aws-fleet-scout --help"
+check = { depends-on = ["sort-imports", "format", "lint", "typecheck", "test"] }
+
+[environments]
+default = { features = ["dev"] }

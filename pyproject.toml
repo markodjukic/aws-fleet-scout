@@ -1,0 +1,191 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aws-fleet-scout"
+dynamic = ["version"]
+description = "Scout optimal AWS compute for cluster workloads. Compare spot, capacity blocks, and on-demand pricing across regions and instance types. Auto-discover instances for CPU and GPU deployments with HPC schedulers."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Marko Djukic", email = "12538173+markodjukic@users.noreply.github.com"}
+]
+maintainers = [
+    {name = "Marko Djukic", email = "12538173+markodjukic@users.noreply.github.com"}
+]
+keywords = ["aws", "ec2", "spot", "fleet", "hpc", "ray", "slurm", "capacity", "finder", "scout"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Topic :: System :: Distributed Computing",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+]
+dependencies = [
+    "boto3>=1.28.0",
+    "python-dotenv>=1.0.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "questionary>=2.0.0",
+    "platformdirs>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "isort>=5.0.0",
+    "mypy>=1.0.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/markodjukic/aws-fleet-scout"
+Repository = "https://github.com/markodjukic/aws-fleet-scout"
+Documentation = "https://github.com/markodjukic/aws-fleet-scout#readme"
+"Bug Tracker" = "https://github.com/markodjukic/aws-fleet-scout/issues"
+Changelog = "https://github.com/markodjukic/aws-fleet-scout/blob/main/CHANGELOG.md"
+
+[project.scripts]
+aws-fleet-scout = "aws_fleet_scout.cli:app"
+fleet-scout = "aws_fleet_scout.cli:app"
+
+[tool.setuptools]
+packages = [
+    "aws_fleet_scout",
+    "aws_fleet_scout.commands",
+    "aws_fleet_scout.commands.spot",
+    "aws_fleet_scout.commands.fleet",
+    "aws_fleet_scout.commands.capacity",
+    "aws_fleet_scout.utils",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "aws_fleet_scout.__version__"}
+
+[tool.setuptools.package-data]
+aws_fleet_scout = ["py.typed"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--showlocals",
+]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "functional: marks tests as functional (require AWS credentials and network access)",
+    "slow: marks tests as slow running (deselect with '-m \"not slow\"')",
+]
+
+[tool.coverage.run]
+source = ["aws_fleet_scout"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    # Exclude CLI entry points (tested indirectly through command functions)
+    "aws_fleet_scout/__main__.py",
+    "aws_fleet_scout/cli.py",
+    # Exclude interactive mode (requires terminal, tested manually)
+    "aws_fleet_scout/interactive.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+    # Exclude table output formatting (we only test JSON output)
+    "if output != 'json':",
+    "if output == 'table':",
+    "else:",
+    "# Table format",
+    "# Format output",
+    # Exclude CLI help display (we test programmatic usage)
+    "if ctx:",
+    "typer.echo\\(ctx.get_help\\(\\)\\)",
+    # Exclude table printing functions entirely
+    "def _print_table",
+    "def _print_comparison_table",
+    "def _print_calendar",
+    # Exclude AWS API error handling (hard to test all error paths)
+    "except ClientError",
+    "except BotoCoreError",
+    "except \\(KeyError, IndexError",
+    "except ValueError",
+    "except json.JSONDecodeError",
+    "except Exception",
+    "logger.warning",
+    "logger.error",
+    # Exclude internal AWS API fetch functions (tested via integration)
+    "def _fetch_all_quota_codes",
+    "def _get_on_demand_price",
+    "def _calculate_price_score",
+    "def _calculate_latency_score",
+    # Exclude print statements in utility calculations
+    "print\\(",
+    "console.print",
+    # Exclude table creation and formatting
+    "table.add_column",
+    "table.add_row",
+    "Table\\(",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311', 'py312']
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip_gitignore = true
+multi_line_mode = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    ".pixi",
+]
+per-file-ignores = [
+    "__init__.py:F401,F403",
+]

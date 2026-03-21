@@ -1,0 +1,21 @@
+"""
+AWS Fleet Scout - Scout the best AWS regions for spot or capacity block deployments.
+
+This package provides tools for finding optimal AWS regions for EC2 spot instance
+deployments, with advanced placement recommendations and composite utility scoring.
+"""
+
+from .commands.fleet.recommend import recommend_placement, PlacementConstraints, PlacementOption
+from .commands.fleet.utility import calculate_composite_utility, UtilityWeights, LatencyConfig, CompositeUtility
+
+__all__ = [
+    'recommend_placement',
+    'PlacementConstraints',
+    'PlacementOption',
+    'calculate_composite_utility',
+    'UtilityWeights',
+    'LatencyConfig',
+    'CompositeUtility',
+]
+
+__version__ = "0.2.1"
