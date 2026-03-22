@@ -6,7 +6,7 @@ Provides a guided interface to build and execute commands.
 
 import subprocess
 import sys
-from typing import List, Optional
+from typing import List, Optional, cast
 
 try:
     import questionary
@@ -80,7 +80,7 @@ def prompt_discovery() -> Optional[str]:
         "Instance prefix(es) to discover (comma-separated):", default="p5", style=custom_style
     ).ask()
 
-    return prefix
+    return cast(Optional[str], prefix)
 
 
 def build_compare_command() -> Optional[List[str]]:

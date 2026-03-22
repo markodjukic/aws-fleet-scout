@@ -1,7 +1,7 @@
 import json
 from dataclasses import asdict, dataclass
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, cast
 
 import typer
 from rich.console import Console
@@ -207,13 +207,13 @@ def _apply_constraints(
 
 
 def recommend_placement(
-    instance: str = None,
+    instance: Optional[str] = None,
     count: int = 1,
-    job_spec: Dict[str, int] = None,
-    constraints: PlacementConstraints = None,
-    regions: List[str] = None,
+    job_spec: Optional[Dict[str, int]] = None,
+    constraints: Optional[PlacementConstraints] = None,
+    regions: Optional[List[str]] = None,
     output: str = "json",
-    ctx: typer.Context = None,
+    ctx: Optional[typer.Context] = None,
 ) -> Optional[List[PlacementOption]]:
     """
     Recommend optimal placement options based on constraints.
@@ -357,7 +357,7 @@ def main(
     gpu_families: str = "",
     network_adjacency: str = "",
     output: str = "json",
-    ctx: typer.Context = None,
+    ctx: Optional[typer.Context] = None,
 ):
     """
     CLI entry point for placement recommendation.
@@ -377,10 +377,10 @@ def main(
         ctx: Typer context for CLI help display
     """
     # Parse job spec
-    job_spec_dict = None
+    job_spec_dict: Optional[Dict[str, int]] = None
     if job_spec:
         try:
-            job_spec_dict = json.loads(job_spec)
+            job_spec_dict = cast(Dict[str, int], json.loads(job_spec))
         except json.JSONDecodeError as e:
             if ctx:
                 typer.echo(ctx.get_help())
@@ -416,7 +416,7 @@ def main(
     )
 
     return recommend_placement(
-        instance=instance if instance else None,
+        instance=instance,
         count=count,
         job_spec=job_spec_dict,
         constraints=constraints,

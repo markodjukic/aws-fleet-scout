@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import typer
 from rich.console import Console
@@ -37,10 +37,10 @@ def main(
     duration: int = 1,
     max_days: int = 7,
     output: str = "json",
-    regions: List[str] = None,
+    regions: Optional[List[str]] = None,
     discover: str = "",
     discover_p_series: bool = False,
-    ctx: typer.Context = None,
+    ctx: Optional[typer.Context] = None,
 ):
     """
     Find available capacity block offerings for GPU instances.

@@ -119,7 +119,7 @@ def _get_on_demand_price(instance_type: str, region: str) -> Optional[float]:
     Returns:
         Hourly on-demand price in USD, or None if unavailable
     """
-    from botocore.exceptions import BotoCoreError, ClientError
+    from botocore.exceptions import BotoCoreError, ClientError  # type: ignore[import-untyped]
 
     from ...utils.aws_client import get_pricing_client
 
@@ -232,8 +232,8 @@ def _calculate_latency_score(region: str, config: LatencyConfig) -> float:
 def calculate_composite_utility(
     job_spec: Dict[str, int],
     region_scores: List[Dict],
-    weights: UtilityWeights = None,
-    latency_config: LatencyConfig = None,
+    weights: Optional[UtilityWeights] = None,
+    latency_config: Optional[LatencyConfig] = None,
     include_pricing: bool = True,
 ) -> List[CompositeUtility]:
     """
@@ -256,8 +256,8 @@ def calculate_composite_utility(
         latency_config = LatencyConfig()
 
     # Collect pricing data if requested
-    region_prices = {}
-    all_prices = []
+    region_prices: Dict[str, Optional[float]] = {}
+    all_prices: List[float] = []
 
     if include_pricing:
         print("Fetching pricing data...")
@@ -333,7 +333,7 @@ def main(
     base_region: str = "",
     latency_penalty: float = 0.3,
     output: str = "json",
-    ctx: typer.Context = None,
+    ctx: Optional[typer.Context] = None,
 ):
     """
     Calculate composite utility scores for fleet placement.
@@ -432,7 +432,7 @@ def main(
         print_json_output(
             data=result_data,
             command="fleet.utility",
-            regions_checked=regions,
+            regions_checked=region_list,
             metadata={
                 "job_requirements": job_requirements,
                 "weights": asdict(weights),

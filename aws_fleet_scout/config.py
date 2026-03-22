@@ -28,7 +28,7 @@ def _load_pricing_region_map():
     def fetch_region_map():
         try:
             # Find botocore's endpoints.json
-            import botocore
+            import botocore  # type: ignore[import-untyped]
 
             botocore_path = Path(botocore.__file__).parent
             endpoints_file = botocore_path / "data" / "endpoints.json"

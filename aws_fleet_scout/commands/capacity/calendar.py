@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List
+from typing import DefaultDict, Dict, List, Optional
 
 import typer
 from rich.console import Console
@@ -37,11 +37,11 @@ def main(
     job_spec: str = "",
     duration: int = 1,
     window: int = 7,
-    regions: List[str] = None,
+    regions: Optional[List[str]] = None,
     output: str = "table",
     discover: str = "",
     discover_p_series: bool = False,
-    ctx: typer.Context = None,
+    ctx: Optional[typer.Context] = None,
 ):
     """
     Show capacity block availability in a calendar matrix view.
@@ -226,7 +226,9 @@ def _query_capacity_blocks_by_date(
     end_date = start_date + timedelta(days=days)
 
     # Structure: {date_str: {region: [offerings]}}
-    offerings_by_date = defaultdict(lambda: defaultdict(list))
+    offerings_by_date: DefaultDict[str, DefaultDict[str, List[Dict]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
 
     for region in regions:
         try:

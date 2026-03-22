@@ -5,7 +5,7 @@ Validates instance requests against AWS Service Quotas to provide
 early warnings and suggestions before attempting deployments.
 """
 
-from typing import Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, cast
 
 from .cache import get_cached_data
 
@@ -21,7 +21,7 @@ def _fetch_all_quota_codes(region: str = "us-east-1") -> Dict[str, str]:
         Dict mapping family name to quota code
     """
     try:
-        import boto3
+        import boto3  # type: ignore[import-untyped]
 
         client = boto3.client("service-quotas", region_name=region)
 
@@ -84,7 +84,9 @@ def get_quota_code_for_family(family: str, region: str = "us-east-1") -> Optiona
     def fetch_quotas():
         return _fetch_all_quota_codes(region)
 
-    quota_map = get_cached_data("quota_codes", fetch_quotas, region=region)
+    quota_map = cast(
+        Optional[Dict[str, str]], get_cached_data("quota_codes", fetch_quotas, region=region)
+    )
 
     if quota_map and family in quota_map:
         return quota_map[family]
@@ -133,7 +135,7 @@ def get_vcpu_count(instance_type: str, region: str = "us-east-1") -> Optional[in
     def fetch_vcpu_counts():
         """Fetch vCPU counts for all instance types in the region."""
         try:
-            import boto3
+            import boto3  # type: ignore[import-untyped]
 
             ec2 = boto3.client("ec2", region_name=region)
 
@@ -152,20 +154,22 @@ def get_vcpu_count(instance_type: str, region: str = "us-east-1") -> Optional[in
             return {}
 
     # Use cached data or fetch fresh
-    vcpu_map = get_cached_data("vcpu_counts", fetch_vcpu_counts, region=region)
+    vcpu_map = cast(
+        Optional[Dict[str, int]], get_cached_data("vcpu_counts", fetch_vcpu_counts, region=region)
+    )
 
     if vcpu_map and instance_type in vcpu_map:
         return vcpu_map[instance_type]
 
     # Fallback: try single instance lookup if not in cache
     try:
-        import boto3
+        import boto3  # type: ignore[import-untyped]
 
         ec2 = boto3.client("ec2", region_name=region)
         response = ec2.describe_instance_types(InstanceTypes=[instance_type])
 
         if response["InstanceTypes"]:
-            return response["InstanceTypes"][0]["VCpuInfo"]["DefaultVCpus"]
+            return int(response["InstanceTypes"][0]["VCpuInfo"]["DefaultVCpus"])
     except Exception:
         pass
 
@@ -196,7 +200,7 @@ def get_quota_for_instance(instance_type: str, region: str = "us-east-1") -> Opt
 
     def fetch_quota():
         try:
-            import boto3
+            import boto3  # type: ignore[import-untyped]
 
             client = boto3.client("service-quotas", region_name=region)
             response = client.get_service_quota(ServiceCode="ec2", QuotaCode=quota_code)
@@ -271,7 +275,7 @@ def validate_instance_request(
 
 def check_discovered_instances_quotas(
     instance_types: list, target_capacity: int, region: str = "us-east-1", skip_check: bool = False
-) -> Dict[str, Dict]:
+) -> Dict[str, Dict[str, Any]]:
     """
     Check quotas for multiple discovered instance types.
 
@@ -287,7 +291,7 @@ def check_discovered_instances_quotas(
     if skip_check:
         return {}
 
-    results = {}
+    results: Dict[str, Dict[str, Any]] = {}
 
     for instance_type in instance_types:
         vcpu_count = get_vcpu_count(instance_type)
@@ -323,7 +327,7 @@ def check_discovered_instances_quotas(
     return results
 
 
-def print_quota_summary(quota_results: Dict[str, Dict], target_capacity: int):
+def print_quota_summary(quota_results: Dict[str, Dict[str, Any]], target_capacity: int):
     """
     Print a summary of quota validation results.
 

@@ -22,7 +22,7 @@ def print_json_output(
         regions_checked: List of regions that were queried
         metadata: Additional metadata to include
     """
-    envelope = {
+    envelope: Dict[str, Any] = {
         "status": "success",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "command": command,
@@ -48,7 +48,7 @@ def print_error_output(error: str, command: str, details: Optional[Dict] = None)
         command: Command name
         details: Additional error details
     """
-    envelope = {
+    envelope: Dict[str, Any] = {
         "status": "error",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "command": command,

@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timezone
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import typer
 from rich.console import Console
@@ -18,10 +18,10 @@ def main(
     duration: int = 24,
     max_days: int = 7,
     output: str = "table",
-    regions: List[str] = None,
+    regions: Optional[List[str]] = None,
     discover_p_series: bool = False,
     discover: str = "",
-    ctx: typer.Context = None,
+    ctx: Optional[typer.Context] = None,
 ):
     """
     Compare all procurement methods: Spot, Capacity Blocks, and On-Demand.

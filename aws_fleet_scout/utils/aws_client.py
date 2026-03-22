@@ -7,8 +7,8 @@ redundant client initialization across commands.
 
 from typing import Dict, List, Optional
 
-import boto3
-from botocore.exceptions import ClientError
+import boto3  # type: ignore[import-untyped]
+from botocore.exceptions import ClientError  # type: ignore[import-untyped]
 
 from .cache import get_cached_data
 

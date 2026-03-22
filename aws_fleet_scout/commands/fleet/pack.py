@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
 import typer
 from rich.console import Console
@@ -11,7 +11,10 @@ from ...utils.output import print_json_output
 
 
 def main(
-    job_spec: str = "", output: str = "json", regions: List[str] = None, ctx: typer.Context = None
+    job_spec: str = "",
+    output: str = "json",
+    regions: Optional[List[str]] = None,
+    ctx: Optional[typer.Context] = None,
 ):
     """
     Multi-instance matchmaking (fleet packing) for mixed instance fleets.
@@ -151,7 +154,7 @@ def _compute_region_scores(
     Returns:
         Dict mapping region to {aggregate_score, az_id, instance_scores}
     """
-    region_data = {}
+    region_data: Dict[Tuple[str, str], Dict[str, float]] = {}
 
     # Group scores by region and AZ
     for instance_type, scores in instance_scores.items():
@@ -166,7 +169,7 @@ def _compute_region_scores(
             region_data[key][instance_type] = score
 
     # Compute aggregate scores for each region
-    result = {}
+    result: Dict[str, Dict] = {}
     for (region, az_id), scores_dict in region_data.items():
         # Check if this region/AZ has scores for all required instance types
         missing_types = set(job_requirements.keys()) - set(scores_dict.keys())
