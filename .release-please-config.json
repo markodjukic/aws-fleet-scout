@@ -11,12 +11,6 @@
         "MANIFEST.in"
       ],
       "bump-minor-pre-major": true,
-      "extra-files": [
-        {
-          "type": "python",
-          "path": "aws_fleet_scout/__init__.py"
-        }
-      ],
       "changelog-sections": [
         {"type": "feat",     "section": "### Features"},
         {"type": "fix",      "section": "### Bug Fixes"},
