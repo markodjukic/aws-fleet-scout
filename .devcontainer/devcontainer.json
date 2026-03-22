@@ -11,6 +11,15 @@
 	"postCreateCommand": "curl -fsSL https://pixi.sh/install.sh | bash",
 	"remoteEnv": {
 		"PATH": "${containerEnv:PATH}:/home/vscode/.pixi/bin"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.black-formatter",
+				"ms-python.flake8"
+			]
+		}
 	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
