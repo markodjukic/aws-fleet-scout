@@ -1,15 +1,12 @@
 import json
 import logging
-import sys
 from dataclasses import asdict, dataclass
-from decimal import Decimal
 from typing import Dict, List, Optional, Tuple
 
 import typer
 from rich.console import Console
 from rich.table import Table
 
-from ...config import DEFAULT_REGIONS
 from ...utils.output import print_json_output
 
 # Constants

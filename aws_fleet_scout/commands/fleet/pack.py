@@ -1,6 +1,5 @@
 import json
-import sys
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 import typer
 from rich.console import Console

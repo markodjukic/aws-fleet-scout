@@ -1,7 +1,6 @@
 import json
-import sys
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import typer
 from rich.console import Console
@@ -9,7 +8,7 @@ from rich.table import Table
 
 from ..config import DEFAULT_REGIONS, PRICING_REGION_MAP
 from ..utils.aws_client import check_on_demand_availability, get_ec2_client, get_pricing_client
-from ..utils.output import print_error_output, print_json_output
+from ..utils.output import print_json_output
 
 
 def main(
@@ -84,8 +83,6 @@ def main(
                 print()
 
                 # Interactive confirmation for large discoveries
-                import sys
-
                 try:
                     response = input(
                         f"Proceed with comparing {len(discovered_instances)} instance types? [y/N]: "
@@ -450,18 +447,18 @@ def _print_comparison_table(
             print(
                 f"  ✓ BEST: Spot instances (Score: {spot['score']}/10, ${spot['total_hourly_cost']:.2f}/hr)"
             )
-            print(f"    - Lowest cost with high availability")
-            print(f"    - Use capacity-optimized allocation strategy")
+            print("    - Lowest cost with high availability")
+            print("    - Use capacity-optimized allocation strategy")
         elif cb["available"]:
             print(
                 f"  ✓ BEST: Capacity blocks (${cb['upfront_fee']:.2f} for {cb['duration_hours']}hrs)"
             )
-            print(f"    - Guaranteed capacity for scheduled workloads")
+            print("    - Guaranteed capacity for scheduled workloads")
             print(f"    - Offering ID: {cb['offering_id']}")
         elif od["available"] and od["price_per_hour"]:
             print(f"  ✓ BEST: On-demand (${od['price_per_hour']:.4f}/hr)")
-            print(f"    - Guaranteed availability, no interruptions")
+            print("    - Guaranteed availability, no interruptions")
         else:
-            print(f"  ✗ Limited availability - consider alternative regions or instance types")
+            print("  ✗ Limited availability - consider alternative regions or instance types")
 
     print()

@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from rich import print_json
-from rich.console import Console
 
 
 def print_json_output(

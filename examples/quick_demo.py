@@ -15,7 +15,7 @@ To run this demo locally:
 
 1. Create and activate a virtual environment:
    python3 -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source venv/bin/activate  # On Windows: venv/Scripts/activate
 
 2. Install the package locally in development mode:
    pip install -e .
@@ -191,7 +191,7 @@ def demo_instance_discovery():
         print("Example 5a: Discover all m7i instances in us-east-1")
         print("-" * 60)
 
-        result = spot_score(
+        spot_score(
             instance_type="",
             discover="m7i",
             regions=["us-east-1"],
@@ -199,12 +199,12 @@ def demo_instance_discovery():
             output="table",
         )
 
-        print(f"\n✓ Discovered m7i instance types in us-east-1")
+        print("\n✓ Discovered m7i instance types in us-east-1")
 
         print("\n\nExample 5b: Discover GPU instances (p5 family)")
         print("-" * 60)
 
-        result = spot_score(
+        spot_score(
             instance_type="",
             discover="p5",
             regions=["us-east-1"],
@@ -212,7 +212,7 @@ def demo_instance_discovery():
             output="table",
         )
 
-        print(f"\n✓ Discovered p5 GPU instance types")
+        print("\n✓ Discovered p5 GPU instance types")
 
     except Exception as e:
         print(f"Error: {e}")
@@ -233,7 +233,7 @@ def demo_capacity_blocks():
         print("Example 6a: Find capacity blocks for p5.48xlarge")
         print("-" * 60)
 
-        result = capacity_find(
+        capacity_find(
             instance_type="p5.48xlarge",
             duration=1,
             max_days=7,
@@ -241,7 +241,7 @@ def demo_capacity_blocks():
             regions=["us-east-1", "us-west-2"],
         )
 
-        print(f"\n✓ Searched for capacity blocks in next 7 days")
+        print("\n✓ Searched for capacity blocks in next 7 days")
 
         print("\n\nExample 6b: Calendar view of capacity blocks")
         print("-" * 60)
@@ -254,7 +254,7 @@ def demo_capacity_blocks():
             regions=["us-east-1", "us-west-2"],
         )
 
-        print(f"\n✓ Calendar shows availability across dates and regions")
+        print("\n✓ Calendar shows availability across dates and regions")
 
     except Exception as e:
         print(f"Error: {e}")
@@ -275,7 +275,7 @@ def demo_integration_example():
 
         print("Scenario: ML Training Cluster")
         print(f"  Requirements: {job_spec}")
-        print(f"  Goal: Find optimal region with high stability and GPU availability\n")
+        print("  Goal: Find optimal region with high stability and GPU availability\n")
 
         # Step 1: Set constraints
         constraints = PlacementConstraints(
@@ -295,15 +295,15 @@ def demo_integration_example():
 
         if options and len(options) > 0:
             best = options[0]
-            print(f"\n✓ RECOMMENDED DEPLOYMENT:")
+            print("\n✓ RECOMMENDED DEPLOYMENT:")
             print(f"  Region: {best.region}")
             print(f"  Availability Zone: {best.availability_zone_id}")
             print(f"  Aggregate Score: {best.aggregate_score:.2f}/10")
             print(f"  Predicted Stability: {best.predicted_stability}")
             print(f"  Instance Scores: {best.instance_scores}")
-            print(f"\n  Next steps:")
+            print("\n  Next steps:")
             print(f"    1. Configure Ray/Slurm cluster in {best.region}")
-            print(f"    2. Use spot instances with capacity-optimized allocation")
+            print("    2. Use spot instances with capacity-optimized allocation")
             print(f"    3. Set up in AZ: {best.availability_zone_id}")
         else:
             print("\n✗ No options found meeting the constraints")

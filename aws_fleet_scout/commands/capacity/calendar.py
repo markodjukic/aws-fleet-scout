@@ -1,8 +1,7 @@
 import json
-import sys
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import typer
 from rich.console import Console
@@ -463,7 +462,7 @@ def _print_discovery_calendar_view(  # pragma: no cover
             console.print(f"  Offering ID: {best_offering['offering_id']}")
             console.print()
     else:
-        console.print(f"[yellow]No capacity blocks available for any discovered instances[/yellow]")
+        console.print("[yellow]No capacity blocks available for any discovered instances[/yellow]")
         console.print()
 
     # Legend

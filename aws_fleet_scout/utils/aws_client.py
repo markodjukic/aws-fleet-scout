@@ -8,7 +8,7 @@ redundant client initialization across commands.
 from typing import Dict, List, Optional
 
 import boto3
-from botocore.exceptions import BotoCoreError, ClientError
+from botocore.exceptions import ClientError
 
 from .cache import get_cached_data
 
@@ -116,10 +116,10 @@ def check_on_demand_availability(instance_type: str, regions: List[str]) -> Dict
             # (spot-only instances are rare and usually documented separately)
             availability[region] = len(response.get("InstanceTypeOfferings", [])) > 0
 
-        except ClientError as e:
+        except ClientError:
             # Region might not be enabled or other access issues
             availability[region] = False
-        except Exception as e:
+        except Exception:
             # Any other error, assume not available
             availability[region] = False
 

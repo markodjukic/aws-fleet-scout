@@ -2,8 +2,6 @@
 
 from unittest.mock import Mock, patch
 
-import pytest
-
 from aws_fleet_scout.commands.spot.score import main
 
 
@@ -42,7 +40,7 @@ class TestSpotScoreCommand:
         mock_client.get_spot_placement_scores.return_value = {"SpotPlacementScores": []}
         mock_get_client.return_value = mock_client
 
-        result = main(
+        main(
             instance_type="p5.48xlarge",
             output="json",
             regions=None,
@@ -325,9 +323,7 @@ class TestSpotScoreCaching:
         }
         mock_get_client.return_value = mock_client
 
-        result = main(
-            instance_type="p5.48xlarge", output="json", regions=["us-east-1"], target_capacity=15
-        )
+        main(instance_type="p5.48xlarge", output="json", regions=["us-east-1"], target_capacity=15)
 
         # Should cache the results
         mock_cache.assert_called_once()

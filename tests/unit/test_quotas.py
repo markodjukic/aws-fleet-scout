@@ -2,9 +2,7 @@
 Unit tests for quota utilities.
 """
 
-from unittest.mock import MagicMock, Mock, patch
-
-import pytest
+from unittest.mock import Mock, patch
 
 from aws_fleet_scout.utils.quotas import (
     check_discovered_instances_quotas,

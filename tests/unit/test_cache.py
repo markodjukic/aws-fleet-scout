@@ -7,8 +7,6 @@ import time
 from pathlib import Path
 from unittest.mock import Mock, mock_open, patch
 
-import pytest
-
 from aws_fleet_scout.utils.cache import CACHE_DIR, clear_cache, get_cache_info, get_cached_data
 
 

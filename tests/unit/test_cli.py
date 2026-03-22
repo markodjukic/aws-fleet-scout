@@ -1,6 +1,5 @@
 """Unit tests for CLI functionality"""
 
-import pytest
 from typer.testing import CliRunner
 
 from aws_fleet_scout import __version__

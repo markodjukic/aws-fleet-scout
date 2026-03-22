@@ -5,7 +5,7 @@ These tests use mocking and don't make real AWS API calls.
 """
 
 from datetime import datetime, timezone
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 

@@ -1,7 +1,5 @@
 """Unit tests for region utilities"""
 
-import pytest
-
 from aws_fleet_scout.utils.regions import (
     expand_region_wildcards,
     get_all_regions,

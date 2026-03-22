@@ -1,7 +1,6 @@
 import json
-import sys
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import typer
 from rich.console import Console

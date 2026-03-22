@@ -122,8 +122,6 @@ class TestPricingAPI:
     @pytest.mark.slow
     def test_get_on_demand_pricing(self):
         """Should fetch real on-demand pricing (slow test)"""
-        import json
-
         client = get_pricing_client("us-east-1")
 
         response = client.get_products(

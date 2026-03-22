@@ -1,8 +1,7 @@
 import json
-import sys
 from dataclasses import asdict, dataclass
 from enum import Enum
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 import typer
 from rich.console import Console

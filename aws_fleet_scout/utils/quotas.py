@@ -248,7 +248,6 @@ def validate_instance_request(
 
     if requested_vcpus > quota_vcpus:
         max_instances = int(quota_vcpus // vcpu_count)
-        family = get_instance_family(instance_type)
 
         warning = f"""
 ⚠️  Warning: Requesting {count}x {instance_type} ({requested_vcpus:,} vCPUs) exceeds your quota
@@ -256,13 +255,13 @@ def validate_instance_request(
     Maximum you can request: {max_instances} instances
 
     Suggestion: Request quota increase or reduce instance count
-    
+
     To request quota increase:
     aws service-quotas request-service-quota-increase \\
       --service-code ec2 \\
       --quota-code {quota_info['quota_code']} \\
       --desired-value {requested_vcpus * 2}
-    
+
     Or use --skip-quota-check to bypass this validation
 """
         return False, warning

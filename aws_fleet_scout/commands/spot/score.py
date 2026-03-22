@@ -1,14 +1,12 @@
 import hashlib
-import json
-import sys
 
 from rich.console import Console
 from rich.table import Table
 
 from ...config import DEFAULT_REGIONS
 from ...utils.aws_client import discover_instances_by_prefix, get_ec2_client
-from ...utils.cache import CACHE_DIR, get_cached_data
-from ...utils.output import print_error_output, print_json_output
+from ...utils.cache import get_cached_data
+from ...utils.output import print_json_output
 from ...utils.quotas import (
     check_discovered_instances_quotas,
     print_quota_summary,
@@ -136,7 +134,7 @@ def main(
                 results[itype] = cached_scores
                 cache_hits += 1
                 if output != "json" and len(instance_types) > 1:
-                    print(f"  ✓ Using cached scores (less than 1 hour old)")
+                    print("  ✓ Using cached scores (less than 1 hour old)")
                 continue
 
         # Cache miss or force refresh - fetch from AWS

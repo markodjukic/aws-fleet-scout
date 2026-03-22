@@ -1,7 +1,5 @@
 """Unit tests for configuration constants"""
 
-import pytest
-
 from aws_fleet_scout.config import DEFAULT_REGIONS, PRICING_REGION_MAP
 
 

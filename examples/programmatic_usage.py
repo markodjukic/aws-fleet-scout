@@ -134,17 +134,17 @@ def example_validate_before_deployment():
     )
 
     if is_feasible:
-        print(f"✓ Deployment is FEASIBLE")
+        print("✓ Deployment is FEASIBLE")
         print(f"  Region: {result['region']}")
         print(f"  Score: {result['score']:.2f}/10 (>= 7.0 threshold)")
     else:
         if result:
-            print(f"✗ Deployment has LOW CONFIDENCE")
+            print("✗ Deployment has LOW CONFIDENCE")
             print(f"  Best region: {result['region']}")
             print(f"  Score: {result['score']:.2f}/10 (< 7.0 threshold)")
-            print(f"  Consider reducing capacity or trying different instance types")
+            print("  Consider reducing capacity or trying different instance types")
         else:
-            print(f"✗ No regions available for this configuration")
+            print("✗ No regions available for this configuration")
 
 
 # Example 3: Multi-region strategy
@@ -204,11 +204,11 @@ def example_cicd_integration():
         # In real CI/CD: export region to environment, trigger deployment
         print(f"  export DEPLOY_REGION={result['region']}")
         print(f"  export DEPLOY_AZ={result['availability_zone']}")
-        print(f"  # Continue with terraform/cloudformation/ansible...")
+        print("  # Continue with terraform/cloudformation/ansible...")
         return 0  # Success exit code
     else:
-        print(f"\n✗ Deployment blocked - insufficient capacity")
-        print(f"  Consider: scaling down, different instance types, or manual override")
+        print("\n✗ Deployment blocked - insufficient capacity")
+        print("  Consider: scaling down, different instance types, or manual override")
         return 1  # Failure exit code
 
 

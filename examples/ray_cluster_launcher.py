@@ -62,7 +62,7 @@ def launch_ray_cluster(head_instances, worker_instances, regions=None):
 
     # Optionally save to file
     output_file = f"ray_cluster_{best_region}.yaml"
-    print(f"\nTo deploy, save configuration and run:")
+    print("\nTo deploy, save configuration and run:")
     print(f"  ray up {output_file}")
 
     return cluster_config

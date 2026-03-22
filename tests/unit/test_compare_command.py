@@ -246,8 +246,6 @@ class TestCompareValidation:
     @patch("aws_fleet_scout.commands.compare.check_on_demand_availability")
     def test_compare_with_error_handling(self, mock_check_od, mock_pricing, mock_ec2):
         """Test compare handles API errors gracefully."""
-        from datetime import datetime, timezone
-
         from aws_fleet_scout.commands.compare import main
 
         mock_ec2_client = Mock()

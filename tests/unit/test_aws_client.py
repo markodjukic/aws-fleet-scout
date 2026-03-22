@@ -1,8 +1,6 @@
 """Unit tests for AWS client utilities (mocked)"""
 
-from unittest.mock import MagicMock, Mock, patch
-
-import pytest
+from unittest.mock import Mock, patch
 
 from aws_fleet_scout.utils.aws_client import (
     AWSClientManager,
@@ -43,8 +41,9 @@ class TestAWSClientManager:
         """Different regions should get different clients"""
         manager = AWSClientManager()
 
-        client1 = manager.get_client("ec2", "us-east-1")
-        client2 = manager.get_client("ec2", "us-west-2")
+        manager.get_client("ec2", "us-east-1")
+        # Second call returns different client
+        manager.get_client("ec2", "us-west-2")
 
         assert mock_boto_client.call_count == 2
 
@@ -156,7 +155,7 @@ class TestGetAvailableRegions:
         """Should use DEFAULT_REGIONS when regions param is None"""
         mock_check.return_value = {"us-east-1": True}
 
-        result = get_available_regions_for_instance("p5.48xlarge", regions=None)
+        get_available_regions_for_instance("p5.48xlarge", regions=None)
 
         # Should have called check with DEFAULT_REGIONS
         call_args = mock_check.call_args[0]
@@ -166,19 +165,29 @@ class TestGetAvailableRegions:
 class TestInstanceDiscovery:
     """Test instance type discovery functions"""
 
+    @patch("aws_fleet_scout.utils.aws_client.get_cached_data")
     @patch("aws_fleet_scout.utils.aws_client.get_ec2_client")
-    def test_discover_by_prefix_single_prefix(self, mock_get_client):
+    def test_discover_by_prefix_single_prefix(self, mock_get_client, mock_cache):
         """Should discover instances matching single prefix"""
         mock_client = Mock()
-        mock_client.describe_instance_type_offerings.return_value = {
-            "InstanceTypeOfferings": [
-                {"InstanceType": "p5.48xlarge"},
-                {"InstanceType": "p5.4xlarge"},
-                {"InstanceType": "p5en.48xlarge"},
-                {"InstanceType": "m7i.large"},  # Should be filtered out
-            ]
-        }
+        mock_paginator = Mock()
+        mock_paginator.paginate.return_value = [
+            {
+                "InstanceTypeOfferings": [
+                    {"InstanceType": "p5.48xlarge"},
+                    {"InstanceType": "p5.4xlarge"},
+                    {"InstanceType": "p5en.48xlarge"},
+                    {"InstanceType": "m7i.large"},  # Should be filtered out
+                ]
+            }
+        ]
+        mock_client.get_paginator.return_value = mock_paginator
         mock_get_client.return_value = mock_client
+
+        def cache_side_effect(key, fetch_func, region):
+            return fetch_func()
+
+        mock_cache.side_effect = cache_side_effect
 
         result = discover_instances_by_prefix(["us-east-1"], ["p5"])
 
@@ -189,45 +198,58 @@ class TestInstanceDiscovery:
     def test_discover_by_prefix_multiple_prefixes(self, mock_get_client, mock_cache):
         """Should discover instances matching multiple prefixes"""
         mock_client = Mock()
+        mock_paginator = Mock()
+        mock_paginator.paginate.return_value = [
+            {
+                "InstanceTypeOfferings": [
+                    {"InstanceType": "p5.48xlarge"},
+                    {"InstanceType": "g5.xlarge"},
+                    {"InstanceType": "m7i.large"},  # Should be filtered out
+                ]
+            }
+        ]
+        mock_client.get_paginator.return_value = mock_paginator
+        mock_get_client.return_value = mock_client
 
-        # Mock cache to return the offerings
         def cache_side_effect(key, fetch_func, region):
             return fetch_func()
 
         mock_cache.side_effect = cache_side_effect
 
-        mock_client.describe_instance_type_offerings.return_value = {
-            "InstanceTypeOfferings": [
-                {"InstanceType": "p5.48xlarge"},
-                {"InstanceType": "g5.xlarge"},
-                {"InstanceType": "m7i.large"},  # Should be filtered out
-            ]
-        }
-        mock_get_client.return_value = mock_client
-
         result = discover_instances_by_prefix(["us-east-1"], ["p5", "g5"])
 
         assert result == ["g5.xlarge", "p5.48xlarge"]
 
+    @patch("aws_fleet_scout.utils.aws_client.get_cached_data")
     @patch("aws_fleet_scout.utils.aws_client.get_ec2_client")
-    def test_discover_by_prefix_multiple_regions(self, mock_get_client):
+    def test_discover_by_prefix_multiple_regions(self, mock_get_client, mock_cache):
         """Should deduplicate instances across regions"""
         mock_client = Mock()
-        mock_client.describe_instance_type_offerings.side_effect = [
+        paginator1 = Mock()
+        paginator1.paginate.return_value = [
             {
                 "InstanceTypeOfferings": [
                     {"InstanceType": "p5.48xlarge"},
                     {"InstanceType": "p5.4xlarge"},
                 ]
-            },
+            }
+        ]
+        paginator2 = Mock()
+        paginator2.paginate.return_value = [
             {
                 "InstanceTypeOfferings": [
-                    {"InstanceType": "p5.48xlarge"},  # Duplicate
+                    {"InstanceType": "p5.48xlarge"},
                     {"InstanceType": "p5en.48xlarge"},
                 ]
-            },
+            }
         ]
+        mock_client.get_paginator.side_effect = [paginator1, paginator2]
         mock_get_client.return_value = mock_client
+
+        def cache_side_effect(key, fetch_func, region):
+            return fetch_func()
+
+        mock_cache.side_effect = cache_side_effect
 
         result = discover_instances_by_prefix(["us-east-1", "us-west-2"], ["p5"])
 
@@ -245,10 +267,13 @@ class TestInstanceDiscovery:
 
         mock_cache.side_effect = cache_side_effect
 
-        mock_client.describe_instance_type_offerings.side_effect = [
-            Exception("API Error"),
-            {"InstanceTypeOfferings": [{"InstanceType": "p5.48xlarge"}]},
+        mock_paginator_err = Mock()
+        mock_paginator_err.paginate.side_effect = Exception("API Error")
+        mock_paginator_ok = Mock()
+        mock_paginator_ok.paginate.return_value = [
+            {"InstanceTypeOfferings": [{"InstanceType": "p5.48xlarge"}]}
         ]
+        mock_client.get_paginator.side_effect = [mock_paginator_err, mock_paginator_ok]
         mock_get_client.return_value = mock_client
 
         result = discover_instances_by_prefix(["us-east-1", "us-west-2"], ["p5"])
