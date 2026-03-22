@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2](https://github.com/markodjukic/aws-fleet-scout/compare/aws-fleet-scout-v1.0.1...aws-fleet-scout-v1.0.2) (2026-03-22)
+
+
+### Bug Fixes
+
+* clarify package description wording ([58c3b71](https://github.com/markodjukic/aws-fleet-scout/commit/58c3b71127dc4f208ae65afa732835430e5a29b7))
+
 ## [1.0.1](https://github.com/markodjukic/aws-fleet-scout/compare/aws-fleet-scout-v1.0.0...aws-fleet-scout-v1.0.1) (2026-03-22)
 
 
