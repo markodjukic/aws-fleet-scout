@@ -1,0 +1,60 @@
+name: TestPyPI Smoke Test
+
+on:
+  workflow_run:
+    workflows:
+      - Publish to TestPyPI
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: Install and run from TestPyPI
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve package version
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION=$(python - <<'PY'
+          import re
+          from pathlib import Path
+          content = Path("aws_fleet_scout/__init__.py").read_text(encoding="utf-8")
+          match = re.search(r'__version__\s*=\s*"([^"]+)"', content)
+          if not match:
+              raise SystemExit("Could not find __version__")
+          print(match.group(1))
+          PY
+          )
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Install from TestPyPI (with retries)
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          for attempt in {1..10}; do
+            if python -m pip install --upgrade pip && \
+               python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ "aws-fleet-scout==$VERSION"; then
+              echo "Installed aws-fleet-scout==$VERSION from TestPyPI"
+              exit 0
+            fi
+            echo "Install attempt $attempt failed; waiting 30s before retry"
+            sleep 30
+          done
+          echo "Failed to install aws-fleet-scout==$VERSION from TestPyPI after retries"
+          exit 1
+
+      - name: Smoke test CLI
+        run: aws-fleet-scout --version

@@ -1,0 +1,44 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "python",
+      "package-name": "aws-fleet-scout",
+      "changelog-path": "CHANGELOG.md",
+      "include-paths": [
+        "aws_fleet_scout/**",
+        "pyproject.toml",
+        "setup.cfg",
+        "MANIFEST.in"
+      ],
+      "bump-minor-pre-major": true,
+      "changelog-sections": [
+        {
+          "type": "feat",
+          "section": "Features"
+        },
+        {
+          "type": "fix",
+          "section": "Bug Fixes"
+        },
+        {
+          "type": "perf",
+          "section": "Performance"
+        },
+        {
+          "type": "docs",
+          "section": "Documentation"
+        },
+        {
+          "type": "chore",
+          "section": "Chores",
+          "hidden": true
+        },
+        {
+          "type": "refactor",
+          "section": "Refactoring",
+          "hidden": true
+        }
+      ]
+    }
+  }
+}

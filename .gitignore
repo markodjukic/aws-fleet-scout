@@ -1,0 +1,22 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+
+# Build and packaging artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+PKG-INFO
+
+# Test and type-check caches
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Local environment and editor noise
+.env
+.venv/
+*.log
+.DS_Store
