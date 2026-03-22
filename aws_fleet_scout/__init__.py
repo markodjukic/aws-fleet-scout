@@ -5,17 +5,22 @@ This package provides tools for finding optimal AWS regions for EC2 spot instanc
 deployments, with advanced placement recommendations and composite utility scoring.
 """
 
-from .commands.fleet.recommend import recommend_placement, PlacementConstraints, PlacementOption
-from .commands.fleet.utility import calculate_composite_utility, UtilityWeights, LatencyConfig, CompositeUtility
+from .commands.fleet.recommend import PlacementConstraints, PlacementOption, recommend_placement
+from .commands.fleet.utility import (
+    CompositeUtility,
+    LatencyConfig,
+    UtilityWeights,
+    calculate_composite_utility,
+)
 
 __all__ = [
-    'recommend_placement',
-    'PlacementConstraints',
-    'PlacementOption',
-    'calculate_composite_utility',
-    'UtilityWeights',
-    'LatencyConfig',
-    'CompositeUtility',
+    "recommend_placement",
+    "PlacementConstraints",
+    "PlacementOption",
+    "calculate_composite_utility",
+    "UtilityWeights",
+    "LatencyConfig",
+    "CompositeUtility",
 ]
 
 __version__ = "1.0.0"

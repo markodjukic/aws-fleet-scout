@@ -453,8 +453,8 @@ packages:
   requires_python: '>=3.8'
 - pypi: ./
   name: aws-fleet-scout
-  version: 0.2.1
-  sha256: a9d2dcb0d78d09d66ec5e02c8881595a2abf9f2de37ea7e39f90f25d80d13e2f
+  version: 1.0.0
+  sha256: 774af79c7088f178495200816bd52e90d3520f3acd2db17ea39485074b2ed0dd
   requires_dist:
   - boto3>=1.28.0
   - python-dotenv>=1.0.0
