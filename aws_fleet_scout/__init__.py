@@ -1,7 +1,7 @@
 """
 AWS Fleet Scout - Scout the best AWS regions for spot or capacity block deployments.
 
-This package provides tools for finding optimal AWS regions for EC2 spot instance
+This package provides tools for finding optimal AWS regions for EC2 compute
 deployments, with advanced placement recommendations and composite utility scoring.
 """
 
