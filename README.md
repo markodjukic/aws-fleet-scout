@@ -177,6 +177,7 @@ pixi run bump-major
 ## Documentation
 
 - Architecture: [docs/architecture.md](docs/architecture.md)
+- Examples and usage: [docs/examples.md](docs/examples.md)
 - Development scripts: [docs/scripts.md](docs/scripts.md)
 - Development tools and linting: [docs/development.md](docs/development.md)
 
