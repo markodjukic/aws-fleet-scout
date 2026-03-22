@@ -8,6 +8,7 @@ on:
       - aws_fleet_scout/**
       - tests/**
       - pyproject.toml
+      - pixi.lock
       - setup.cfg
       - MANIFEST.in
       - pixi.toml
@@ -18,6 +19,7 @@ on:
       - aws_fleet_scout/**
       - tests/**
       - pyproject.toml
+      - pixi.lock
       - setup.cfg
       - MANIFEST.in
       - pixi.toml
