@@ -1,0 +1,40 @@
+name: Maintenance
+
+on:
+  schedule:
+    # Run weekly at midnight UTC
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+# Manage the concurrency and cancel in-progress jobs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: read
+
+jobs:
+  github-cleanup:
+    name: GitHub Cleanup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Delete Old Workflow Runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 30
+          keep_minimum_runs: 50
+
+      - name: Cleanup Stale Branches
+        uses: crs-k/stale-branches@v8.2.2
+        with:
+          repo-token: ${{ github.token }}
+          days-before-stale: 120
+          days-before-delete: 180
+          pr-check: true
+          ignore-issue-interaction: true
